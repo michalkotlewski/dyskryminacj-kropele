@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import scipy.interpolate as interpolate
+import matplotlib.pyplot as pl
 
 def inverse_transform_sampling(data, n_bins=40, n_samples=1000):
     hist, bin_edges = np.histogram(data, bins=n_bins, density=True)
@@ -19,13 +20,15 @@ def u(r,alfa,beta):
 
 V=10**12    #wszystko jest w cm3
 n0=100
-N=100
+N=1000
 dt=0.01
 r_mean=0.0030531
 v_mean=4*np.pi/3*r_mean**3
 eta=np.repeat(V*n0/N,N)
-v=inverse_transform_sampling(f(np.arange(0,1,0.01),v_mean),100,N)
+v=inverse_transform_sampling(f(np.arange(0,1,0.001),v_mean),100,N)
 r=(3/(4*np.pi)*v)**(1/3)
+pl.hist(r)
+pl.show()
 #print(f(np.arange(0.004),v_mean))
 print(v)
 print(r)

@@ -32,3 +32,26 @@ pl.show()
 #print(f(np.arange(0.004),v_mean))
 print(v)
 print(r)
+
+def efficiency(j, k):
+    #do rozbudowy, na razie stała
+    return 0.5
+
+#do ustalenia wartosci stałych!!!
+alfa = 0.5
+beta = 0.5
+
+def prob_real_droplets(j, k):
+    return  efficiency(j, k) * np.pi * (r[j]+r[k])**2 *np.absolute(u(r[j],alfa, beta)-u(r[k], alfa, beta)) * dt/V   
+
+def prob_super_droplets(j, k):
+    return np.maximum(eta[j],eta[k]) * prob_real_droplets(j, k)
+
+def prob_super_droplets_linear(j, k):
+    return N*(N-1)/(2*(N//2)) * prob_super_droplets(j, k)
+
+def linear_sampling():
+    one = np.arange(N)
+    random = np.random.permutation(one) 
+    return np.reshape(random,(-1,2))
+

@@ -3,6 +3,8 @@ import numpy as np
 import scipy.interpolate as interpolate
 import matplotlib.pyplot as pl
 
+
+
 def inverse_transform_sampling(data, n_bins=40, n_samples=1000):
     hist, bin_edges = np.histogram(data, bins=n_bins, density=True)
     cum_values = np.zeros(bin_edges.shape)
@@ -14,6 +16,8 @@ def inverse_transform_sampling(data, n_bins=40, n_samples=1000):
 
 def f(data, v_mean):
     return 1/v_mean*np.exp(-data/v_mean)
+
+
 
 #def u(r,alfa,beta):
 #    return alfa*r**beta

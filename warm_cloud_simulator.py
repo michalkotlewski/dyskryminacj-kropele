@@ -3,17 +3,24 @@ import numpy as np
 import scipy.interpolate as interpolate
 import matplotlib.pyplot as pl
 
-def inverse_transform_sampling(data, n_bins=40, n_samples=1000):
+def inverse_transform_sampling(data, n_bins=40, n_samples=10000):
     hist, bin_edges = np.histogram(data, bins=n_bins, density=True)
     cum_values = np.zeros(bin_edges.shape)
     cum_values[1:] = np.cumsum(hist*np.diff(bin_edges))
     inv_cdf = interpolate.interp1d(cum_values, bin_edges)
-    r = np.random.rand(n_samples)
+    r = np.random.uniform(0,1,n_samples)
+    #r = np.random.rand(n_samples)
     return inv_cdf(r)
 
 
+
+
+#def f(data, v_mean):
+#    return 1/v_mean*np.exp(-data/v_mean)
+
+
 def f(data, v_mean):
-    return 1/v_mean*np.exp(-data/v_mean)
+    return v_mean*np.log(1/v_mean-data)
 
 #def u(r,alfa,beta):
 #    return alfa*r**beta
@@ -34,8 +41,13 @@ mont=1000#liczba iteracji w Monte Carlo
 
 r_mean=0.0030531
 v_mean=4*np.pi/3*r_mean**3
-eta=np.repeat(V*n0/N,N)
+
+eta=np.repeat(V*N/n0,n0)
+print(np.shape(eta))
 v=inverse_transform_sampling(f(np.arange(0,1,0.001),v_mean),100,N)
+print(v.shape)
+#v=f(np.random.uniform(1000),v_mean)
+#pl.hist(v)
 r=(3/(4*np.pi)*v)**(1/3)
 pl.hist(r)
 pl.show()
@@ -83,7 +95,7 @@ def prob_super_droplets_linear(j, k):
     return N*(N-1)/(2*(N//2)) * prob_super_droplets(j, k)
 
 def linear_sampling():
-    one = np.arange(N)
+    one = np.arange(n0)
     random = np.random.permutation(one) 
     return np.reshape(random,(-1,2))
 
@@ -96,7 +108,7 @@ eps=np.reshape(eta,(50,2))
 
 
 for i in range(mont):
-    for j in range(int(N/2)):
+    for j in range(int(n0/2)):
         psi=np.random.uniform(0,1)
         pdb=prob_super_droplets_linear(ar[j,0],ar[j,1])
         if pdb<psi:

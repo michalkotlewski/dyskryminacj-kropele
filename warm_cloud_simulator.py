@@ -3,7 +3,7 @@ import numpy as np
 import scipy.interpolate as interpolate
 import matplotlib.pyplot as pl
 from scipy.optimize import fsolve
-
+"""
 def inverse_transform_sampling(data, n_bins=40, n_samples=10000):
     hist, bin_edges = np.histogram(data, bins=n_bins, density=True)
     cum_values = np.zeros(bin_edges.shape)
@@ -12,7 +12,7 @@ def inverse_transform_sampling(data, n_bins=40, n_samples=10000):
     r = np.random.uniform(0,1,n_samples)
     #r = np.random.rand(n_samples)
     return inv_cdf(r)
-
+"""
 
 
 
@@ -63,7 +63,7 @@ def inverse_transform_sampling(n, r_sr):
 #def u(r,alfa,beta):
 #    return alfa*r**beta
 
-V=10**12    #wszystko jest w cm3
+V=10**6    #wszystko jest w cm3
 n0=100
 N=1000
 dt=0.01
@@ -77,7 +77,7 @@ mont=1000#liczba iteracji w Monte Carlo
 
 
 
-r_mean=0.0030531
+r_mean=0.000030531
 v_mean=4*np.pi/3*r_mean**3
 
 eta=np.repeat(V*N/n0,n0)

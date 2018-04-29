@@ -2,6 +2,7 @@
 import numpy as np
 import scipy.interpolate as interpolate
 import matplotlib.pyplot as pl
+from scipy.optimize import fsolve
 
 def inverse_transform_sampling(data, n_bins=40, n_samples=10000):
     hist, bin_edges = np.histogram(data, bins=n_bins, density=True)
@@ -15,12 +16,49 @@ def inverse_transform_sampling(data, n_bins=40, n_samples=10000):
 
 
 
+##Slawkowe wtf
+#def inverse_transform_sampling(data, n_bins=40, n_samples=1000):
+#    hist, bin_edges = np.histogram(data, bins=n_bins, density=True)
+#    cum_values = np.zeros(bin_edges.shape)
+#    cum_values[1:] = np.cumsum(hist*np.diff(bin_edges))
+#    inv_cdf = interpolate.interp1d(cum_values, bin_edges)
+#    r = np.random.rand(n_samples)
+#    return inv_cdf(r)
+
+
 #def f(data, v_mean):
 #    return 1/v_mean*np.exp(-data/v_mean)
 
 
+
 def f(data, v_mean):
     return v_mean*np.log(1/v_mean-data)
+
+###Inverse transform sampling
+#karmi się liczbą superkropelek i srednim promieniem
+#wypluwa listę
+#r_sr = 30.531*10**(-6)
+
+def inverse_transform_sampling(n, r_sr):
+    
+    v_sr = 4 * np.pi * r_sr**3 /3
+    list = np.random.uniform(0,1,n)
+    
+    radius=[]
+    for i in range(n):
+        #function for fsolve, f=0
+        def f(x):
+            return 1-np.exp(-x/v_sr)-list[i]
+        #finding volume corresponding to generated number
+        y = fsolve(f,v_sr)
+    
+        #radius from volume
+        r = (3*y[0]/(4 * np.pi))**(1/3)
+    
+        #appending
+        radius.append(r)
+    return radius
+
 
 #def u(r,alfa,beta):
 #    return alfa*r**beta

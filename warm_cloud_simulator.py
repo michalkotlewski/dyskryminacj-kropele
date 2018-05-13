@@ -20,7 +20,7 @@ def f(data, v_mean):
 
 V=10**12    #wszystko jest w cm3
 n0=100
-N=1000
+N=1000 
 dt=0.01
 ro_w=999.7  #dla temp 10 C
 ro_a=1.262 #dla wilgotnosci 60%
@@ -34,7 +34,7 @@ mont=1000#liczba iteracji w Monte Carlo
 
 r_mean=0.0030531
 v_mean=4*np.pi/3*r_mean**3
-eta=np.repeat(V*n0/N,N)
+eta=np.repeat(V*N/n0,n0)
 v=inverse_transform_sampling(f(np.arange(0,1,0.001),v_mean),100,N)
 r=(3/(4*np.pi)*v)**(1/3)
 pl.hist(r)
@@ -50,12 +50,10 @@ pl.show()
 
 
 #prędkosc licze w SI    
-
-
 def u(i): #terminal velocities
-    X=8*(V*10**(-6))*(ro_w-ro_a)*g/(np.pi*((2*r[i]*0.01)**2)*ro_a*nu_a**2)
+    X=32*((r[i]*0.01)**3)*(ro_w-ro_a)*g/(ro_a*nu_a**2)
     
-    b_RE=1/2*c_1*X**0.5*((1+c_1*X**0.5)**0.5-1)**(-1)*(1+c_1*X**0.5)**(-0.5)
+    b_RE=1/2*c_1*X**0.5*(((1+c_1*X**0.5)**0.5-1)**(-1))*(1+c_1*X**0.5)**(-0.5)
     a_RE=d_0**2/4*((1+c_1*X**0.5)**0.5-1)**2/(X**b_RE)
     
     A_nu=a_RE*nu_a**(1-2*b_RE)*((4*ro_w*g)/(3*ro_a))**b_RE
@@ -63,8 +61,27 @@ def u(i): #terminal velocities
     
     return A_nu*(2*r[i]*0.01)**B_nu  
 
+def u2(x): #terminal velocities not from index, but from the value
+    X=32*((x)**3)*(ro_w-ro_a)*g/(ro_a*nu_a**2)
+    
+    b_RE=1/2*c_1*X**0.5*((1+c_1*X**0.5)**0.5-1)**(-1)*(1+c_1*X**0.5)**(-0.5)
+    a_RE=d_0**2/4*((1+c_1*X**0.5)**0.5-1)**2/(X**b_RE)
+    
+    A_nu=a_RE*nu_a**(1-2*b_RE)*((4*ro_w*g)/(3*ro_a))**b_RE
+    B_nu=3*b_RE-1
+    
+    return A_nu*(2*x)**B_nu  
 
 
+#values of terminal velocities for plot
+rad=[]
+for i in range(1,301):
+    rad.append(i/1000000)
+vel=[]
+for i in range(300):
+    vel.append(u2(rad[i]))
+    
+pl.plot(rad,vel,'ro')
 
 
 
@@ -83,7 +100,7 @@ def prob_super_droplets_linear(j, k):
     return N*(N-1)/(2*(N//2)) * prob_super_droplets(j, k)
 
 def linear_sampling():
-    one = np.arange(N)
+    one = np.arange(n0)
     random = np.random.permutation(one) 
     return np.reshape(random,(-1,2))
 
@@ -96,11 +113,12 @@ eps=np.reshape(eta,(50,2))
 
 
 for i in range(mont):
-    for j in range(int(N/2)):
+    for j in range(int(n0/2)):
         psi=np.random.uniform(0,1)
         pdb=prob_super_droplets_linear(ar[j,0],ar[j,1])
         if pdb<psi:
-           # if eps[j,0]==1 and if eps[j,1]==1:
+            #if eps[j,0]==1 and if eps[j,1]==1:
+                
                 
             if eps[j,0]==eps[j,1]:
                 eps[j,1]=eps[j,0]/2

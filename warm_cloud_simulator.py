@@ -2,23 +2,68 @@
 import numpy as np
 import scipy.interpolate as interpolate
 import matplotlib.pyplot as pl
-
-def inverse_transform_sampling(data, n_bins=40, n_samples=1000):
+from scipy.optimize import fsolve
+"""
+def inverse_transform_sampling(data, n_bins=40, n_samples=10000):
     hist, bin_edges = np.histogram(data, bins=n_bins, density=True)
     cum_values = np.zeros(bin_edges.shape)
     cum_values[1:] = np.cumsum(hist*np.diff(bin_edges))
     inv_cdf = interpolate.interp1d(cum_values, bin_edges)
-    r = np.random.rand(n_samples)
+    r = np.random.uniform(0,1,n_samples)
+    #r = np.random.rand(n_samples)
     return inv_cdf(r)
+"""
+
+
+
+##Slawkowe wtf
+#def inverse_transform_sampling(data, n_bins=40, n_samples=1000):
+#    hist, bin_edges = np.histogram(data, bins=n_bins, density=True)
+#    cum_values = np.zeros(bin_edges.shape)
+#    cum_values[1:] = np.cumsum(hist*np.diff(bin_edges))
+#    inv_cdf = interpolate.interp1d(cum_values, bin_edges)
+#    r = np.random.rand(n_samples)
+#    return inv_cdf(r)
+
+
+#def f(data, v_mean):
+#    return 1/v_mean*np.exp(-data/v_mean)
+
 
 
 def f(data, v_mean):
-    return 1/v_mean*np.exp(-data/v_mean)
+    return v_mean*np.log(1/v_mean-data)
+
+###Inverse transform sampling
+#karmi się liczbą superkropelek i srednim promieniem
+#wypluwa listę
+#r_sr = 30.531*10**(-6)
+
+def inverse_transform_sampling(n, r_sr):
+    
+    v_sr = 4 * np.pi * r_sr**3 /3
+    list = np.random.uniform(0,1,n)
+    
+    radius=[]
+    for i in range(n):
+        #function for fsolve, f=0
+        def f(x):
+            return 1-np.exp(-x/v_sr)-list[i]
+        #finding volume corresponding to generated number
+        y = fsolve(f,v_sr)
+    
+        #radius from volume
+        r = (3*y[0]/(4 * np.pi))**(1/3)
+    
+        #appending
+        radius.append(r)
+    return radius
+
 
 #def u(r,alfa,beta):
 #    return alfa*r**beta
 
-V=10**12    #wszystko jest w cm3
+V=10**6    #wszystko jest w cm3
 n0=100
 N=1000 
 dt=0.01
@@ -32,10 +77,19 @@ mont=1000#liczba iteracji w Monte Carlo
 
 
 
-r_mean=0.0030531
+r_mean=0.000030531
 v_mean=4*np.pi/3*r_mean**3
+<<<<<<< HEAD
 eta=np.repeat(V*N/n0,n0)
+=======
+
+eta=np.repeat(V*N/n0,n0)
+print(np.shape(eta))
+>>>>>>> e166a11f9aa094fe72d47f5fbebd9c65968c4d20
 v=inverse_transform_sampling(f(np.arange(0,1,0.001),v_mean),100,N)
+print(v.shape)
+#v=f(np.random.uniform(1000),v_mean)
+#pl.hist(v)
 r=(3/(4*np.pi)*v)**(1/3)
 pl.hist(r)
 pl.show()

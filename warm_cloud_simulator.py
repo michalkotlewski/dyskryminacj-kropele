@@ -32,97 +32,97 @@ def inverse_transform_sampling(data, n_bins=40, n_samples=10000):
 
 
 def f(data, v_mean):
-    return v_mean*np.log(1/v_mean-data)
+    return v_mean * np.log(1 / v_mean - data)
 
 ###Inverse transform sampling
 #karmi się liczbą superkropelek i srednim promieniem
 #wypluwa listę
-#r_sr = 30.531*10**(-6)
+
 
 def inverse_transform_sampling(n, r_sr):
     
     v_sr = 4 * np.pi * r_sr**3 /3
-    list = np.random.uniform(0,1,n)
+    list = np.random.uniform(0, 1, n)
     
     radius=[]
+    
     for i in range(n):
         #function for fsolve, f=0
         def f(x):
-            return 1-np.exp(-x/v_sr)-list[i]
+            return 1 - np.exp(-x/v_sr) - list[i]
         #finding volume corresponding to generated number
-        y = fsolve(f,v_sr)
+        y = fsolve(f, v_sr)
     
         #radius from volume
-        r = (3*y[0]/(4 * np.pi))**(1/3)
+        r = (3 * y[0] / (4 * np.pi))**(1/3)
     
         #appending
         radius.append(r)
     return radius
 
 
-#def u(r,alfa,beta):
-#    return alfa*r**beta
+V = 10**6    #wszystko jest w cm3
+n0 = 100
+N = 1000 
+dt = 0.01
+ro_w = 999.7  #dla temp 10 C
+ro_a = 1.262 #dla wilgotnosci 60%
+g = 9.80665 #przyspieszenie graw
+nu_a = 17.08*10**(-6) # lepkosc kinematyczna powietrza [Pa·s]
+d_0 = 9.06 #stała
+c_1 = 0.0902 #stala
+mont = 1000#liczba iteracji w Monte Carlo
+r_mean = 0.000030531
+v_mean = 4 * np.pi/3 * r_mean**3
+r_sr = 30.531*10**(-6)
 
-V=10**6    #wszystko jest w cm3
-n0=100
-N=1000 
-dt=0.01
-ro_w=999.7  #dla temp 10 C
-ro_a=1.262 #dla wilgotnosci 60%
-g=9.80665 #przyspieszenie graw
-nu_a=17.08*10**(-6) # lepkosc kinematyczna powietrza [Pa·s]
-d_0=9.06 #stała
-c_1=0.0902 #stala
-mont=1000#liczba iteracji w Monte Carlo
-
-
-
+<<<<<<< HEAD
 r_mean=0.000030531
 v_mean=4*np.pi/3*r_mean**3
 #<<<<<<< HEAD
 eta=np.repeat(V*N/n0,n0)
 #=======
+=======
+>>>>>>> fb5a89bca6ce4d93303edc06d97d7d9f4d92217c
 
-eta=np.repeat(V*N/n0,n0)
+eta = np.repeat(V * N/n0, n0) #funkcja krotnosci
 print(np.shape(eta))
+<<<<<<< HEAD
 #>>>>>>> e166a11f9aa094fe72d47f5fbebd9c65968c4d20
 v=inverse_transform_sampling(f(np.arange(0,1,0.001),v_mean),100,N)
 print(v.shape)
 #v=f(np.random.uniform(1000),v_mean)
 #pl.hist(v)
 r=(3/(4*np.pi)*v)**(1/3)
+=======
+
+r = inverse_transform_sampling(N, r_sr) #wektor promieni
+#print(radii)
+>>>>>>> fb5a89bca6ce4d93303edc06d97d7d9f4d92217c
 pl.hist(r)
 pl.show()
-#print(f(np.arange(0.004),v_mean))
-#print(v) 
-#print(r)
 
 
-
-
-
-
-
-#prędkosc licze w SI    
+#prędkosc licze w SI, czyli w m/s  
 def u(i): #terminal velocities
-    X=32*((r[i]*0.01)**3)*(ro_w-ro_a)*g/(ro_a*nu_a**2)
+    X = 32*((r[i]*0.01)**3)*(ro_w-ro_a)*g/(ro_a*nu_a**2)
     
-    b_RE=1/2*c_1*X**0.5*(((1+c_1*X**0.5)**0.5-1)**(-1))*(1+c_1*X**0.5)**(-0.5)
-    a_RE=d_0**2/4*((1+c_1*X**0.5)**0.5-1)**2/(X**b_RE)
+    b_RE = 1/2*c_1*X**0.5*(((1+c_1*X**0.5)**0.5-1)**(-1))*(1+c_1*X**0.5)**(-0.5)
+    a_RE = d_0**2/4*((1+c_1*X**0.5)**0.5-1)**2/(X**b_RE)
     
-    A_nu=a_RE*nu_a**(1-2*b_RE)*((4*ro_w*g)/(3*ro_a))**b_RE
-    B_nu=3*b_RE-1
+    A_nu = a_RE*nu_a**(1-2*b_RE)*((4*ro_w*g)/(3*ro_a))**b_RE
+    B_nu = 3*b_RE-1
     
     return A_nu*(2*r[i]*0.01)**B_nu  
 
 def u2(x): #terminal velocities not from index, but from the value
-    X=32*((x)**3)*(ro_w-ro_a)*g/(ro_a*nu_a**2)
+    X = 32*((x)**3)*(ro_w-ro_a)*g/(ro_a*nu_a**2)
     
-    b_RE=1/2*c_1*X**0.5*((1+c_1*X**0.5)**0.5-1)**(-1)*(1+c_1*X**0.5)**(-0.5)
-    a_RE=d_0**2/4*((1+c_1*X**0.5)**0.5-1)**2/(X**b_RE)
+    b_RE = 1/2*c_1*X**0.5*((1+c_1*X**0.5)**0.5-1)**(-1)*(1+c_1*X**0.5)**(-0.5)
+    a_RE = d_0**2/4*((1+c_1*X**0.5)**0.5-1)**2/(X**b_RE)
     
-    A_nu=a_RE*nu_a**(1-2*b_RE)*((4*ro_w*g)/(3*ro_a))**b_RE
-    B_nu=3*b_RE-1
+    A_nu = a_RE*nu_a**(1-2*b_RE)*((4*ro_w*g)/(3*ro_a))**b_RE
+    B_nu = 3*b_RE-1
     
     return A_nu*(2*x)**B_nu  
 
@@ -137,6 +137,18 @@ for i in range(300):
     
 pl.plot(rad,vel,'ro')
 
+# TURBULENCJA - DEFINICJE
+
+energy_disipation = 0.5  # do ustalenia, m^2/s^3
+kolm_length = (nu_a**3/energy_disipation)**(1/4)
+r_d = 10**(-6)  # do ustalenia, length scale of the acceleration diffusion
+St = 0.5  # Stokes number, do ustalenia, odczytany dla <r> = 30 mikrom
+          # energy_disipation = 0.5
+
+def g_12(j, k):
+    return ((kolm_length**2 + r_d**2)/((max(r[j], r[k]))**2 + r_d**2))**(c_1/2)
+
+
 
 
 
@@ -144,19 +156,25 @@ def efficiency(j, k):
     #do rozbudowy, na razie stała
     return 0.5
 
-def prob_real_droplets(j, k):
-    return  efficiency(j, k) * np.pi * (r[j]+r[k])**2 *np.absolute(u(j)-u(k)) * dt/V   
+def prob_real_droplets_g(j, k):  # graw
+    return  efficiency(j, k) * np.pi * (r[j]+r[k])**2 *np.absolute(u(j)-u(k)) * dt/V 
 
-def prob_super_droplets(j, k):
-    return np.maximum(eta[j],eta[k]) * prob_real_droplets(j, k)
 
-def prob_super_droplets_linear(j, k):
-    return N*(N-1)/(2*(N//2)) * prob_super_droplets(j, k)
+def prob_real_droplets_t(j, k):  # turb
+    return  efficiency(j, k) * np.pi * (r[j]+r[k])**2 *np.absolute(u(j)-u(k)) * dt/V 
+  
+
+def prob_super_droplets_g(j, k):
+    return np.maximum(eta[j],eta[k]) * prob_real_droplets_g(j, k)
+
+def prob_super_droplets_linear_g(j, k):
+    return N*(N-1)/(2*(N//2)) * prob_super_droplets_g(j, k)
 
 def linear_sampling():
     one = np.arange(n0)
     random = np.random.permutation(one) 
     return np.reshape(random,(-1,2))
+
 
 
 
@@ -169,7 +187,7 @@ eps=np.reshape(eta,(50,2))
 for i in range(mont):
     for j in range(int(n0/2)):
         psi=np.random.uniform(0,1)
-        pdb=prob_super_droplets_linear(ar[j,0],ar[j,1])
+        pdb=prob_super_droplets_linear_g(ar[j,0],ar[j,1])
         if pdb<psi:
             #if eps[j,0]==1 and if eps[j,1]==1:
                 

@@ -79,13 +79,13 @@ mont=1000#liczba iteracji w Monte Carlo
 
 r_mean=0.000030531
 v_mean=4*np.pi/3*r_mean**3
-<<<<<<< HEAD
+#<<<<<<< HEAD
 eta=np.repeat(V*N/n0,n0)
-=======
+#=======
 
 eta=np.repeat(V*N/n0,n0)
 print(np.shape(eta))
->>>>>>> e166a11f9aa094fe72d47f5fbebd9c65968c4d20
+#>>>>>>> e166a11f9aa094fe72d47f5fbebd9c65968c4d20
 v=inverse_transform_sampling(f(np.arange(0,1,0.001),v_mean),100,N)
 print(v.shape)
 #v=f(np.random.uniform(1000),v_mean)

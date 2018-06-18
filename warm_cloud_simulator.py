@@ -104,16 +104,17 @@ pl.show()
 
 
 #prędkosc licze w SI, czyli w m/s  
-def u(i): #terminal velocities
-    X = 32*((r[i]*0.01)**3)*(ro_w-ro_a)*g/(ro_a*nu_a**2)
+def u(i): #terminal velocities not from index, but from the value
+    X = 32*((r[i])**3)*(ro_w-ro_a)*g/(ro_a*nu_a**2)
     
-    b_RE = 1/2*c_1*X**0.5*(((1+c_1*X**0.5)**0.5-1)**(-1))*(1+c_1*X**0.5)**(-0.5)
+    b_RE = 1/2*c_1*X**0.5*((1+c_1*X**0.5)**0.5-1)**(-1)*(1+c_1*X**0.5)**(-0.5)
     a_RE = d_0**2/4*((1+c_1*X**0.5)**0.5-1)**2/(X**b_RE)
     
     A_nu = a_RE*nu_a**(1-2*b_RE)*((4*ro_w*g)/(3*ro_a))**b_RE
     B_nu = 3*b_RE-1
     
-    return A_nu*(2*r[i]*0.01)**B_nu  
+    return A_nu*(2*r[i])**B_nu  
+
 
 def u2(x): #terminal velocities not from index, but from the value
     X = 32*((x)**3)*(ro_w-ro_a)*g/(ro_a*nu_a**2)
@@ -127,7 +128,7 @@ def u2(x): #terminal velocities not from index, but from the value
     return A_nu*(2*x)**B_nu  
 
 
-#values of terminal velocities for plot
+#values of terminal velocities for plot 
 rad=[]
 for i in range(1,301):
     rad.append(i/1000000)

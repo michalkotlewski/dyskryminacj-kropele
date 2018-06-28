@@ -140,7 +140,7 @@ pl.plot(rad,vel,'ro')
 
 
 
-# TURBULENCJA - DEFINICJE
+                    # TURBULENCJA - DEFINICJE
 
 en_dis = 0.01  # energy dissipation
 kolm_length = (nu_a**3/en_dis)**(1/4)
@@ -242,8 +242,49 @@ for i in range(mont):
     #den=1/V*np.sum(eps_array) #droplet number density  
     
     
+#Turbulencja - dokładnie to samo, co z gravitacją, tylko zamiana jednego członu
+def efficiency(j, k):
+    #do rozbudowy, na razie stała
+    return 0.5
 
-        
+def prob_real_droplets_g(j, k):  # graw
+    return  efficiency(j, k) * K(j,k) * dt/V 
+
+
+def prob_real_droplets_t(j, k):  # turb
+    return  efficiency(j, k) * np.pi * (r[j]+r[k])**2 *np.absolute(u(j)-u(k)) * dt/V 
+  
+
+def prob_super_droplets_g(j, k):
+    return np.maximum(eta[j],eta[k]) * prob_real_droplets_g(j, k)
+
+def prob_super_droplets_linear_g(j, k):
+    return N*(N-1)/(2*(N//2)) * prob_super_droplets_g(j, k)
+
+def linear_sampling():
+    one = np.arange(n0)
+    random = np.random.permutation(one) 
+    return np.reshape(random,(-1,2))
+
+for i in range(mont):
+    for j in range(int(n0/2)):
+        psi=np.random.uniform(0,1)
+        pdb=prob_super_droplets_linear_g(ar[j,0],ar[j,1])
+        if pdb<psi:
+            #if eps[j,0]==1 and if eps[j,1]==1:
+                
+                
+            if eps[j,0]==eps[j,1]:
+                eps[j,1]=eps[j,0]/2
+                eps[j,0]=eps[j,0]/2
+                
+                r[ar[j,0]]= (r[ar[j,0]]**3+r[ar[j,0]]**3)**(1/3)
+                r[ar[j,1]]= r[ar[j,0]]
+                
+            if eps[j,0]>eps[j,1]:
+                eps[j,0]=eps[j,1]-eps[j,0]
+                r[ar[j,1]]= (r[ar[j,0]]**3+r[ar[j,0]]**3)**(1/3)
+                       
         
         
         
